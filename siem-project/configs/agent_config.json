@@ -1,0 +1,13 @@
+{
+  "elasticsearch_url": "http://localhost:9200",
+  "index_name": "siem-events",
+  "log_file_path": "/var/log/auth.log",
+  "rules": {
+    "brute_force_threshold": 5,
+    "brute_force_time_window_seconds": 60
+  },
+  "blocked_ips": [
+    "10.0.0.50",
+    "192.168.100.100"
+  ]
+}

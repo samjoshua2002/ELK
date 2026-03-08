@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.12.0
+    container_name: siem_elasticsearch
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false    # Disabled for quick prototype/development
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ports:
+      - "9200:9200"
+    volumes:
+      - es_data:/usr/share/elasticsearch/data
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.12.0
+    container_name: siem_kibana
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    ports:
+      - "5601:5601"
+    depends_on:
+      - elasticsearch
+
+  # The Custom C++ SIEM Agent container
+  siem_agent:
+    build:
+      context: ../agent
+      dockerfile: Dockerfile
+    container_name: siem_agent
+    depends_on:
+      - elasticsearch
+    volumes:
+      # Mount a local log file into the container so the host can simulate logs
+      - ../logs:/var/log/siem_test
+    # We pass the internal Docker network URL to the agent via env variable, not localhost.
+    environment:
+      - ELASTICSEARCH_URL=http://elasticsearch:9200
+
+volumes:
+  es_data:

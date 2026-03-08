@@ -1,0 +1,19 @@
+# Common OS files
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Build directories
+**/build/
+**/.cache/
+**/bin/
+
+# Logs
+**/logs/
+*.log
+
+# IDE and environment specific
+.vscode/
+.idea/
+compile_commands.json
+.env
